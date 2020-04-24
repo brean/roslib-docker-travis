@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+    <name>listen</name>
+    <version>0.0.1</version>
+    <description>
+        Listen to talker
+    </description>
+
+    <maintainer email="andreas.bresser@dfki.de">Andreas Bresser</maintainer>
+
+    <license>GPLv3</license>
+
+    <author email="andreas.bresser@dfki.de">Andreas Bresser</author>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+</package>

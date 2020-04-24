@@ -1,0 +1,95 @@
+version: '3'
+
+services:
+  roscore:
+    tty: true
+    hostname: roscore
+    image: "ros:${ROS_DISTRO}"
+    command: ["roscore", "-p", "11311"]
+    environment:
+      ROS_MASTER_URI: "${ROS_MASTER_URI}"
+      ROS_HOSTNAME: "${ROS_HOSTNAME}"
+    ports:
+      - "11311:11311"
+    networks:
+      - ros
+
+  # simple example rosnode to connect to roscore
+  # implements talker and listener
+  listener:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+      args:
+        ROS_DISTRO: "${ROS_DISTRO}"
+    tty: true
+    image: "ros:${ROS_DISTRO}"
+    depends_on:
+      - roscore
+    environment:
+      ROS_MASTER_URI: "${ROS_MASTER_URI}"
+      ROS_HOSTNAME: "listener"
+    command: ["/opt/catkin_ws/src/listen/run.sh"]
+    # command: ["ping", "roscore"]
+    volumes: 
+      - ./volumes/listen:/opt/catkin_ws/src/listen
+    networks:
+      - ros
+
+  talker:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+      args:
+        ROS_DISTRO: "${ROS_DISTRO}"
+    tty: true
+    image: "ros:${ROS_DISTRO}"
+    depends_on:
+      - roscore
+    environment:
+      ROS_MASTER_URI: "${ROS_MASTER_URI}"
+      ROS_HOSTNAME: "talker"
+    command: ["/opt/catkin_ws/src/talk/run.sh"]
+    volumes: 
+      - ./volumes/talk:/opt/catkin_ws/src/talk
+    networks:
+      - ros
+
+  # ROSnode running the webbridge
+  bridge:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+      args:
+        ROS_DISTRO: "${ROS_DISTRO}"
+    tty: true
+    image: "ros:${ROS_DISTRO}-ros-base"
+    depends_on:
+      - roscore
+    environment:
+      ROS_MASTER_URI: "${ROS_MASTER_URI}"
+      ROS_HOSTNAME: "bridge"
+    networks:
+      - ros
+    ports:
+      - 8080:8080
+
+  # core web bridge
+  roslib:
+    image: python:3.7
+    depends_on:
+      - roscore
+      - talker
+      - listener
+      - bridge
+    environment:
+      ROS_DISTRO: "${ROS_DISTRO}"
+      ROS_MASTER_URI: "${ROS_MASTER_URI}"
+      ROS_HOSTNAME: "roslib"
+    networks:
+      - ros
+
+
+networks:
+  ros:
+    driver: bridge
