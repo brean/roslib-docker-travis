@@ -3,13 +3,17 @@ FROM ros:${ROS_DISTRO}
 # Install rosbridge
 RUN apt-get update && apt-get install -y \
     ros-${ROS_DISTRO}-rosbridge-suite \
+    ros-${ROS_DISTRO}-rosbridge-server \
     ros-${ROS_DISTRO}-ros-tutorials \
-    python-pip cmake iputils-ping \
+    python-pip python-twisted python-openssl \
+    python-autobahn python-tornado \
+    python-bson \
+    cmake iputils-ping \
     --no-install-recommends \
     # Clear apt-cache to reduce image size
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install -U catkin_tools
+RUN pip install -U catkin_tools service_identity
 
 # Copy entrypoint
 COPY ./ros_entrypoint.sh /

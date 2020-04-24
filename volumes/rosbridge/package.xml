@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+    <name>rosbridge</name>
+    <version>0.0.1</version>
+    <description>
+        Bridge between ros and the outside world using websockets
+    </description>
+
+    <maintainer email="andreas.bresser@dfki.de">Andreas Bresser</maintainer>
+
+    <license>GPLv3</license>
+
+    <author email="andreas.bresser@dfki.de">Andreas Bresser</author>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+</package>

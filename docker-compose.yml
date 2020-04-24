@@ -71,6 +71,9 @@ services:
       ROS_HOSTNAME: "bridge"
     networks:
       - ros
+    command: ["/opt/catkin_ws/src/rosbridge/run.sh"]
+    volumes: 
+      - ./volumes/rosbridge:/opt/catkin_ws/src/rosbridge
     ports:
       - 8080:8080
 
