@@ -17,13 +17,8 @@ services:
   # simple example rosnode to connect to roscore
   # implements talker and listener
   listener:
-    build:
-      context: ./docker/ros
-      dockerfile: Dockerfile
-      args:
-        ROS_DISTRO: "${ROS_DISTRO}"
+    image: ros-catkin-self
     tty: true
-    image: "ros:${ROS_DISTRO}"
     depends_on:
       - roscore
     environment:
@@ -38,12 +33,12 @@ services:
 
   talker:
     build:
-      context: ./docker/ros
+      context: ./ros/docker
       dockerfile: Dockerfile
       args:
         ROS_DISTRO: "${ROS_DISTRO}"
+    image: ros-catkin-self
     tty: true
-    image: "ros:${ROS_DISTRO}"
     depends_on:
       - roscore
     environment:
@@ -57,13 +52,8 @@ services:
 
   # ROSnode running the webbridge
   rosbridge:
-    build:
-      context: ./docker/ros
-      dockerfile: Dockerfile
-      args:
-        ROS_DISTRO: "${ROS_DISTRO}"
+    image: ros-catkin-self
     tty: true
-    image: "ros:${ROS_DISTRO}-ros-base"
     depends_on:
       - roscore
     environment:
@@ -80,17 +70,19 @@ services:
   # core web bridge
   roslib:
     build:
-      context: ./docker/python
+      context: ./python/docker
       dockerfile: Dockerfile
       args:
         ROS_DISTRO: "${ROS_DISTRO}"
+    image: python-roslibpy
     depends_on:
       - roscore
       - talker
       - rosbridge
     volumes: 
       - ./volumes/roslibpy:/roslibpy
-    command: ["python3", "/roslibpy/main.py"]
+    working_dir: "/roslibpy"
+    command: ["python3", "-m", "pytest"]
     networks:
       - ros
 
