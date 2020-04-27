@@ -18,7 +18,7 @@ services:
   # implements talker and listener
   listener:
     build:
-      context: ./docker
+      context: ./docker/ros
       dockerfile: Dockerfile
       args:
         ROS_DISTRO: "${ROS_DISTRO}"
@@ -38,7 +38,7 @@ services:
 
   talker:
     build:
-      context: ./docker
+      context: ./docker/ros
       dockerfile: Dockerfile
       args:
         ROS_DISTRO: "${ROS_DISTRO}"
@@ -56,9 +56,9 @@ services:
       - ros
 
   # ROSnode running the webbridge
-  bridge:
+  rosbridge:
     build:
-      context: ./docker
+      context: ./docker/ros
       dockerfile: Dockerfile
       args:
         ROS_DISTRO: "${ROS_DISTRO}"
@@ -68,7 +68,7 @@ services:
       - roscore
     environment:
       ROS_MASTER_URI: "${ROS_MASTER_URI}"
-      ROS_HOSTNAME: "bridge"
+      ROS_HOSTNAME: "rosbridge"
     networks:
       - ros
     command: ["/opt/catkin_ws/src/rosbridge/run.sh"]
@@ -79,16 +79,18 @@ services:
 
   # core web bridge
   roslib:
-    image: python:3.7
+    build:
+      context: ./docker/python
+      dockerfile: Dockerfile
+      args:
+        ROS_DISTRO: "${ROS_DISTRO}"
     depends_on:
       - roscore
       - talker
-      - listener
-      - bridge
-    environment:
-      ROS_DISTRO: "${ROS_DISTRO}"
-      ROS_MASTER_URI: "${ROS_MASTER_URI}"
-      ROS_HOSTNAME: "roslib"
+      - rosbridge
+    volumes: 
+      - ./volumes/roslibpy:/roslibpy
+    command: ["python3", "/roslibpy/main.py"]
     networks:
       - ros
 
