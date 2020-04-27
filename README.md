@@ -1,5 +1,7 @@
 # roslib-docker-travis
 
+[![Build Status](https://travis-ci.org/brean/roslib-docker-travis.svg?branch=master)](https://travis-ci.org/brean/roslib-docker-travis)
+
 Run a ROS instance in docker (using **docker-compose**) on travis and connect to it using roslibpy
 
 This basic setup consists of 5 docker container:
