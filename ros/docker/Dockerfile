@@ -24,7 +24,6 @@ SHELL [ "bash", "-c" ]
 RUN source /opt/ros/$ROS_DISTRO/setup.bash
 RUN mkdir -p /opt/catkin_ws/src
 RUN cd /opt/catkin_ws && catkin init
-RUN find /opt/catkin_ws
 
 # for roslib
 EXPOSE 9090
