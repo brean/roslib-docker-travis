@@ -1,5 +1,4 @@
 import logging
-import time
 
 import roslibpy
 
@@ -10,6 +9,7 @@ logging.basicConfig(format=fmt, level=logging.INFO)
 log = logging.getLogger(__name__)
 
 msg_data = None
+
 
 def main():
     client = roslibpy.Ros(host='rosbridge', port=8080)
